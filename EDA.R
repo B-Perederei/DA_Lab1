@@ -8,14 +8,10 @@ names(apps) <- str_replace_all(names(apps), c(" " = ""))
 
 str(apps, give.attr = FALSE)
 
+# Cleaning data
 apps <- apps %>% mutate(
     Category = as.factor(Category),
-    ContentRating = as.factor(ContentRating),
-    # True/False variable (Should it be converted to factor)?
-    # Free = as.factor(Free),
-    # AdSupported = as.factor(AdSupported), 
-    # InAppPurchases = as.factor(InAppPurchases),
-    # EditorsChoice = as.factor(EditorsChoice)
+    ContentRating = as.factor(ContentRating)
 )
 
 apps %>% summarise(across(everything(), ~ sum(is.na(.)))) %>%
@@ -23,3 +19,6 @@ select(where(~ all(.) > 0))
 
 apps %>% summarise(across(everything(), ~ mean(is.na(.)))) %>%
 select(where(~ all(.) > 0))
+
+apps <- apps %>% drop_na(AppName, Rating, RatingCount, Installs,
+MinimumInstalls, Currency, Size, MinimumAndroid, DeveloperId, DeveloperEmail)

@@ -14,6 +14,9 @@ apps <- apps %>% mutate(
     ContentRating = as.factor(ContentRating)
 )
 
+apps <- apps %>% select(-c(Installs, ScrapedTime))
+apps["Currency"][apps["Currency"] == "XXX"] <- NA
+
 apps %>% summarise(across(everything(), ~ sum(is.na(.)))) %>%
 select(where(~ all(.) > 0))
 

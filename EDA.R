@@ -17,6 +17,12 @@ apps <- apps %>% mutate(
 apps <- apps %>% select(-c(Installs, ScrapedTime))
 apps["Currency"][apps["Currency"] == "XXX"] <- NA
 
+apps <- apps %>% select(-c(Installs, ScrapedTime))
+apps["Size"][apps["Size"] == "Varies with device"] <- NA
+
+apps <- apps %>% select(-c(Installs, ScrapedTime))
+apps["MinimumAndroid"][apps["MinimumAndroid"] == "Varies with device"] <- NA
+
 apps %>% summarise(across(everything(), ~ sum(is.na(.)))) %>%
 select(where(~ all(.) > 0))
 
@@ -25,3 +31,7 @@ select(where(~ all(.) > 0))
 
 apps <- apps %>% drop_na(AppName, Rating, RatingCount, Installs,
 MinimumInstalls, Currency, Size, MinimumAndroid, DeveloperId, DeveloperEmail)
+
+# Очистка даних
+# Дослідження одиничних змінних
+# Побудова графіків

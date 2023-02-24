@@ -1,3 +1,23 @@
+#problems
+different encoding used or encoded improperly, 
+so "App Namaes" values contain non-latin characters:
+ideas: 
+1. remove such entries with non-latin app names
+2. set NA at fields
+3. set default name
+solution:
+set UTF-8 encoding
+
+#problems 
+do we really need columns:
+	scraped time
+	Privacy policy
+	developer email
+	developer website
+
+
+
+
 #command
 find fields with NA: 
 	colnames(apps)[colSums(is.na(apps)) > 0]

@@ -34,18 +34,11 @@ apps$MinimumAndroid <- str_extract(apps$MinimumAndroid, "\\d(\\.\\d)+")
 apps$Size[apps$Size == "Varies with device"] <- NA
 
 # function to reform string "Size" values to float representing size of app in mega-bytes
-str_to_megabytes <- function(x) {
-	if (is.na(x)) {
-		return(NA)} 
-	else {
-		a <- str_replace(x, ",", "\\.")
-	if (str_detect(x, "k$")) {
-		return(as.numeric(str_extract(x, "\\d+(\\.\\d+)?"))/1000)} else {
-		return(as.numeric(str_extract(x, "\\d+(\\.\\d+)?")))}
-	}
+str_to_megabytes_num <- function(x) {
+	return(x %>% str_replace(",", "\\.") %>% str_extract("\\d+(\\.\\d+)?") %>% as.numeric)
 }
 
-apps$Size <- lapply(apps$Size, str_to_megabytes)
+apps$Size <- ifelse(apps$Size %>% str_detect("k$"), convert_to_num(apps$Size)/1000, convert_to_num(apps$Size))
 
 # save tidied data
 # there is a bug to be fixed with Size values - they all get lost after saving to csv

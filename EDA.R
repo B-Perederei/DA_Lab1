@@ -25,6 +25,7 @@ apps <- apps %>% select(-c(Installs, ScrapedTime))
 
 apps["Currency"][apps["Currency"] == "XXX"] <- NA
 
+
 #substitute from column "Minimum Android" values "Varies with device" with NA
 apps$MinimumAndroid[apps$MinimumAndroid == "Varies with device"] <- NA
 
@@ -50,8 +51,26 @@ apps <- apps %>% drop_na(AppName, Rating, RatingCount, MinimumInstalls, Currency
 #-------------------------------------------
 # 			Data visualization
 #-------------------------------------------
+
+apps <- apps %>% select(-c(Installs, ScrapedTime))
+apps["Size"][apps["Size"] == "Varies with device"] <- NA
+
+apps <- apps %>% select(-c(Installs, ScrapedTime))
+apps["MinimumAndroid"][apps["MinimumAndroid"] == "Varies with device"] <- NA
+
+
 apps %>% summarise(across(everything(), ~ sum(is.na(.)))) %>%
 select(where(~ all(.) > 0))
 
 apps %>% summarise(across(everything(), ~ mean(is.na(.)))) %>%
 select(where(~ all(.) > 0))
+
+
+
+apps <- apps %>% drop_na(AppName, Rating, RatingCount, Installs,
+MinimumInstalls, Currency, Size, MinimumAndroid, DeveloperId, DeveloperEmail)
+
+# Очистка даних
+# Дослідження одиничних змінних
+# Побудова графіків
+

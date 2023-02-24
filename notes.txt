@@ -1,0 +1,54 @@
+#problems
+different encoding used or encoded improperly, 
+so "App Namaes" values contain non-latin characters:
+ideas: 
+1. remove such entries with non-latin app names
+2. set NA at fields
+3. set default name
+solution:
+set UTF-8 encoding
+
+#problems 
+do we really need columns:
+	scraped time
+	Privacy policy
+	developer email
+	developer website
+
+
+
+
+#command
+find fields with NA: 
+	colnames(apps)[colSums(is.na(apps)) > 0]
+
+
+#description
+App Name
+	type: character
+	values: non-restricted
+	NA-free: 
+	
+
+Catogory
+	type: character
+	values: ("Adventure", "Tools", "Productivity", "Communication", "Social", "Libraries & Demo", "Lifestyle", "Personalization", "Racing", "Maps & Navigation", "Travel & Local", "Food & Drink", "Books & Reference", "Medical", "Puzzle", "Entertainment", "Arcade", "Auto & Vehicles", "Photography", "Health & Fitness", "Education", "Shopping", "Board", "Music & Audio", "Sports", "Beauty", "Business", "Educational", "Finance", "News & Magazines", "Casual", "Art & Design", "House & Home", "Card", "Events", "Trivia", 
+		"Weather", "Strategy", "Word", "Video Players & Editors", "Action", "Simulation", "Music", "Dating", "Role Playing", "Casino", "Comics", "Parenting")
+	NA-free: true
+	standartized format: true
+	remarks: -
+
+Rating
+	type: float
+	values: [0, 5]
+	NA-free: false
+	standartized format: true
+	remarks: 
+
+
+"App Name"          "Rating"            "Rating Count"
+"Installs"          "Minimum Installs"  "Currency"
+"Size"              "Minimum Android"   "Developer Id"
+"Developer Website" "Developer Email"   "Released"
+
+	

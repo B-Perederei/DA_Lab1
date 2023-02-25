@@ -39,7 +39,7 @@ str_to_megabytes_num <- function(x) {
 	return(x %>% str_replace(",", "\\.") %>% str_extract("\\d+(\\.\\d+)?") %>% as.numeric)
 }
 
-apps$Size <- ifelse(apps$Size %>% str_detect("k$"), convert_to_num(apps$Size)/1000, convert_to_num(apps$Size))
+apps$Size <- ifelse(apps$Size %>% str_detect("k$"), str_to_megabytes_num(apps$Size) / 1000, str_to_megabytes_num(apps$Size))
 
 # save tidied data
 # there is a bug to be fixed with Size values - they all get lost after saving to csv

@@ -43,13 +43,13 @@ apps$Size <- ifelse(apps$Size %>% str_detect("k$"),
 
 apps["Currency"][apps["Currency"] == "XXX"] <- NA
 
-# Save tidied data
-# write_csv(apps, "Data/Google-Playstore-tidied.csv")
-
 # Under a question to delete
 # apps <- apps %>% drop_na(AppName, Rating, RatingCount, MinimumInstalls,
 #                        Currency, Size, MinimumAndroid, DeveloperId,
 #                        DeveloperEmail, Released)
+
+# Save tidied data
+write_csv(apps, "Data/Google-Playstore-tidied.csv")
 
 #-------------------------------------------
 #           Data visualization

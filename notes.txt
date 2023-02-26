@@ -15,12 +15,19 @@ do we really need columns:
 	developer email
 	developer website
 
-
+#TODO: 
+	Transform MinimumAndroid to MinimumAndroid and MaximumAndroid
 
 
 #command
 find fields with NA: 
 	colnames(apps)[colSums(is.na(apps)) > 0]
+get NA staticics:
+	apps %>% summarise(across(everything(), ~ sum(is.na(.)))) %>%
+	select(where(~ all(.) > 0))
+
+	apps %>% summarise(across(everything(), ~ mean(is.na(.)))) %>%
+	select(where(~ all(.) > 0))
 
 
 #description

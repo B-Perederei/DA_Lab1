@@ -26,9 +26,20 @@ apps$LastUpdated <- apps$LastUpdated %>% parse_date(format = "%b %d, %Y", na = "
 #substitute from column "Minimum Android" values "Varies with device" with NA
 apps$MinimumAndroid[apps$MinimumAndroid == "Varies with device"] <- NA
 
-# Reform "Minimum Android" values appearence from "x.x.x and up" to "x.x.x"
-# Maybe save Maximum Android?
-apps$MinimumAndroid <- str_extract(apps$MinimumAndroid, "\\d(\\.\\d)+")
+# create new column WearOs, which has logical values: true if app is used for wearable device
+# like smart watch, false otherwise
+apps$WearOS <- with(apps, 
+				    case_when(str_detect(apps$MinimumAndroid, "[wW]") ~ TRUE,
+					is.na(apps$MinimumAndroid) ~ NA,
+					TRUE ~ FALSE))
+					
+# devide MinimumAndroid into two columns: MinimumAndroid and MaximumAndroid
+apps <- apps %>% separate(MinimumAndroid, 
+						  into = c("MinimumAndroid", "MaximumAndroid"), 
+						  sep = "( \\- )|( and )")
+
+# substitute "up" values in MaximumAndroid with NA
+apps$MaximumAndroid[apps$MaximumAndroid == "up"] <- NA
 
 # Tiding size from chr to num un mega-bytes
 apps$Size[apps$Size == "Varies with device"] <- NA
@@ -49,8 +60,7 @@ apps["Currency"][apps["Currency"] == "XXX"] <- NA
 #                        DeveloperEmail, Released)
 
 # Save tidied data
-# write_csv(apps, "Data/Google-Playstore-tidied.csv")
-
+write_csv(apps, "Data/Google-Playstore-tidied.csv", na = "")
 #-------------------------------------------
 #           Data researching
 #-------------------------------------------

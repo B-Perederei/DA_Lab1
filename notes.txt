@@ -57,5 +57,3 @@ Rating
 "Installs"          "Minimum Installs"  "Currency"
 "Size"              "Minimum Android"   "Developer Id"
 "Developer Website" "Developer Email"   "Released"
-
-	

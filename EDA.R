@@ -49,7 +49,11 @@ apps["Currency"][apps["Currency"] == "XXX"] <- NA
 #                        DeveloperEmail, Released)
 
 # Save tidied data
-write_csv(apps, "Data/Google-Playstore-tidied.csv")
+# write_csv(apps, "Data/Google-Playstore-tidied.csv")
+
+#-------------------------------------------
+#           Data researching
+#-------------------------------------------
 
 #-------------------------------------------
 #           Data visualization

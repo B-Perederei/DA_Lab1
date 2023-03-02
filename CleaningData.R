@@ -32,8 +32,8 @@ apps <- apps %>% separate(MinimumAndroid,
 						  into = c("MinimumAndroid", "MaximumAndroid"), 
 						  sep = "( \\- )|( and )")
 
-# Іubstitute "up" values in MaximumAndroid with NA
-apps$MaximumAndroid[apps$MaximumAndroid == "up"] <- NA
+# set value TRUE for Free-apps such that are non-free and cost is 0(remove ambiguaty)
+apps$Free[!apps$Free & apps$Price == 0] <- TRUE
 
 # Tiding size from chr to num un mega-bytes
 apps$Size[apps$Size == "Varies with device"] <- NA

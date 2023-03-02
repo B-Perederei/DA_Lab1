@@ -32,7 +32,7 @@ apps <- apps %>% separate(MinimumAndroid,
 						  into = c("MinimumAndroid", "MaximumAndroid"), 
 						  sep = "( \\- )|( and )")
 
-# Іubstitute "up" values in MaximumAndroid with NA
+# Substitute "up" values in MaximumAndroid with NA
 apps$MaximumAndroid[apps$MaximumAndroid == "up"] <- NA
 
 # Tiding size from chr to num un mega-bytes
@@ -46,7 +46,10 @@ apps$Size <- ifelse(apps$Size %>% str_detect("k$"),
                     str_to_megabytes_num(apps$Size) / 1000,
                     str_to_megabytes_num(apps$Size))
 
+# Maybe we don't need to do that for not mixing data
+# we don't know with values which is valid empty data?
 apps["Currency"][apps["Currency"] == "XXX"] <- NA
+apps["ContentRating"][apps["ContentRating"] == "Unrated"] <- NA
 
 # Under a question to delete
 # apps <- apps %>% drop_na(AppName, Rating, RatingCount, MinimumInstalls,

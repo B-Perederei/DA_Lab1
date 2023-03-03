@@ -10,8 +10,12 @@ names(apps) <- str_replace_all(names(apps), c(" " = ""))
 #-------------------------------------------
 
 # Remove Installes, ScrapedTime columns
-# Maybe also remove: "Privacy policy", "Developer email", "Developer website"?
 apps <- apps %>% select(-c(Installs, ScrapedTime))
+
+# Converting "Privacy policy", "Developer email", "Developer website" to TRUE FALSE (have / don't have)
+apps$PrivacyPolicy <- !is.na(apps$PrivacyPolicy)
+apps$DeveloperEmail <- !is.na(apps$PrivacyPolicy)
+apps$DeveloperWebsite <- !is.na(apps$PrivacyPolicy)
 
 # Convert Released values into a 'year-month-day' date format
 apps$Released <- apps$Released %>% parse_date(format = "%b %d, %Y", na = "NA")
@@ -56,6 +60,16 @@ apps["ContentRating"][apps["ContentRating"] == "Unrated"] <- NA
 # apps <- apps %>% drop_na(AppName, Rating, RatingCount, MinimumInstalls,
 #                        Currency, Size, MinimumAndroid, DeveloperId,
 #                        DeveloperEmail, Released)
+
+apps$AppName[is.na(apps$AppName)] <- 'NA '
+
+# Changing collision categories
+apps["Category"][apps["Category"] == "Educational"] <- "EducationalGame"
+apps["Category"][apps["Category"] == "Casual"] <- "CasualGame"
+apps["Category"][apps["Category"] == "Music"] <- "MusicGame"
+
+# Deleting apps with NA MinimumInstalls, because all of them has NA Rating and other fields
+apps <- apps %>% drop_na(MinimumInstalls)
 
 # Save tidied data
 write_csv(apps, "Data/Google-Playstore-tidied.csv", na = "")

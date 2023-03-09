@@ -8,8 +8,10 @@ library(viridis)
 library(fmsb)
 library(car)
 library(ggpubr)
+library(formattable)
 options(dplyr.width = Inf)
 
+# God, give your computer powers to run this file!
 apps <- read_csv("Data/Google-Playstore-tidied.csv", locale = locale(encoding = "UTF-8"))
 
 # Factorize columns
@@ -286,9 +288,6 @@ ggsave("Plots/users_per_year.png")
 
 cost_users <- apps %>% drop_na(c(ContentRating, Free)) %>% select(ContentRating, Free)
 
-print(nrow(cost_users)/nrow(apps))
-print(nrow(apps) - nrow(cost_users))
-
 cost_users <- cost_users %>% group_by(ContentRating, Free) %>% count
 
 # графік платних додатків для кожної вікової групи
@@ -373,7 +372,6 @@ print(p)
 ggsave("Plots/prcices_boxplot.png", p)
 
 a <- a %>% mutate(Released = format(Released, "%Y"), isExpensive = Price > threshold)
-print(a, n = Inf)
 # кількість дорогих та дешевших додатків залежно від категорії встановлень
 p <- ggplot(a, aes(x = MinimumInstalls, fill = isExpensive)) +
   geom_bar(position = "dodge") +
@@ -399,23 +397,27 @@ p <- ggplot(a, aes(x = Price, y = MinimumInstalls, color = isExpensive)) +
 
 print(p)
 ggsave("Plots/paid_apps_installs_tendency.png", p)
-#------------------------------------------------------------------------------------------------------
-#Kubrak Valentin
 
+#------------------------------------------------------------------------------------------------------
+# Kubrak Valentin
+#
 #-------------------------------------------
 #           Descriptive analysis
 #-------------------------------------------
 
 #------------------Size---------------------
 
-qqPlot(apps$Size)
+p <- qqPlot(apps$Size)
+ggsave("Plots/qqPlot_size.png", p)
 
-qqPlot(log(apps$Size))
+p <- qqPlot(log(apps$Size))
+ggsave("Plots/qqPlot_logSize.png", p)
 
 summary(apps$Size)
 
-ggplot(apps, aes(x = Size)) + 
+p <- ggplot(apps, aes(x = Size)) + 
   geom_histogram(bins = 80, color="#00BFFF", fill = '#87CEEB', alpha=0.6, position = 'identity')
+ggsave("Plots/full_hist_size.png", p)
 
 gg1 <- ggplot(apps %>% filter(Size<160), aes(x = Size)) + 
   geom_histogram(bins = 40, color="#0000FF", fill = '#87CEEB', alpha=0.6, position = 'identity')
@@ -423,9 +425,10 @@ gg1 <- ggplot(apps %>% filter(Size<160), aes(x = Size)) +
 gg2 <- ggplot(apps %>% filter(Size>160), aes(x = Size)) + 
   geom_histogram(bins = 40, color="#800000", fill = '#FA8072', alpha=0.6, position = 'identity')
 
-ggarrange(gg1, gg2, ncol = 2, nrow = 1)
+p <- ggarrange(gg1, gg2, ncol = 2, nrow = 1)
+ggsave("Plots/doubled_hist_size.png", p)
 
-ggplot(apps, aes(x = MaximumInstalls, y = log(Size))) +
+p <- ggplot(apps, aes(x = MaximumInstalls, y = log(Size))) +
   geom_boxplot(
     color="#66CDAA",
     fill="#66CDAA",
@@ -434,26 +437,30 @@ ggplot(apps, aes(x = MaximumInstalls, y = log(Size))) +
     outlier.fill="#008080",
     outlier.size=3
   )
-
+ggsave("Plots/boxplot_maxInst_logSize.png", p)
+   
 #--------------Minimum Android--------------
 
-ggplot(apps %>% filter(Rating > 0), aes(x = MinimumAndroid, fill = as.factor(Rating))) + 
+p <- ggplot(apps %>% filter(Rating > 0), aes(x = MinimumAndroid, fill = as.factor(Rating))) + 
   geom_bar(position = position_stack(reverse = TRUE)) +
   theme_light() +
   labs(x = "Мінімальнонеобхідна версія Android", y = "Кількість",
        title = "Кількість додатків для кожної версії Android")
+ggsave("Plots/bar_minAndroid.png", p)
 
 without_na = subset(apps, !is.na(MinimumAndroid))
 #Точковий графік відношення MinimumAndroid до MaximumInstalls
-ggplot(without_na, aes(x = MinimumAndroid, y = MaximumInstalls)) +
+p <- ggplot(without_na, aes(x = MinimumAndroid, y = MaximumInstalls)) +
   geom_point()
+ggsave("Plots/point_minAndroid_maxInst.png", p)
 
 #Аби отримати більш менш рівномірний розподіл, прологарифмуємо змінну MaximumInstalls
-ggplot(apps, aes(x = MinimumAndroid, y = log(MaximumInstalls))) +
+p <- ggplot(apps, aes(x = MinimumAndroid, y = log(MaximumInstalls))) +
   geom_point()
+ggsave("Plots/point_minAndroid_logMaxInst.png", p)
 
 #boxplot відношення MinimumAndroid до MaximumInstalls
-ggplot(apps, aes(x = MinimumAndroid, y = log(MaximumInstalls))) +
+p <- ggplot(apps, aes(x = MinimumAndroid, y = log(MaximumInstalls))) +
   geom_boxplot(
     color="blue",
     fill="blue",
@@ -464,9 +471,10 @@ ggplot(apps, aes(x = MinimumAndroid, y = log(MaximumInstalls))) +
     outlier.fill="red",
     outlier.size=3
   )
+ggsave("Plots/boxplot_minAndroid_logMaxInst.png", p)
 
 #boxplot відношення MinimumAndroid до Size
-ggplot(without_na, aes(x = MinimumAndroid, y = log(Size))) +
+p <- ggplot(without_na, aes(x = MinimumAndroid, y = log(Size))) +
   geom_boxplot(
     color="blue",
     fill="blue",
@@ -477,13 +485,15 @@ ggplot(without_na, aes(x = MinimumAndroid, y = log(Size))) +
     outlier.fill="red",
     outlier.size=3
   )
+ggsave("Plots/boxplot_minAndroid_logSize.png", p)
 
 #-----------------Released------------------
 
-ggplot(apps, aes(x = Released)) + 
+p <- ggplot(apps, aes(x = Released)) + 
   geom_histogram(bins = 40, color="#B22222", fill = '#FA8072', alpha=0.6, position = 'identity')
+ggsave("hist_released.png", p)
 
-ggplot(apps, aes(x = Released, y = Size)) +
+p <- ggplot(apps, aes(x = Released, y = Size)) +
   geom_boxplot(
     color="#CD5C5C",
     fill="#CD5C5C",
@@ -492,8 +502,9 @@ ggplot(apps, aes(x = Released, y = Size)) +
     outlier.fill="#B22222",
     outlier.size=3
   )
+ggsave("Plots/boxplot_released_size.png", p)
 
-ggplot(apps, aes(x = Released, y = log(Size))) +
+p <- ggplot(apps, aes(x = Released, y = log(Size))) +
   geom_boxplot(
     color="#FA8072",
     fill="#FA8072",
@@ -502,13 +513,15 @@ ggplot(apps, aes(x = Released, y = log(Size))) +
     outlier.fill="#B22222",
     outlier.size=3
   )
+ggsave("Plots/boxplot_released_logSize.png", p)
 
 #----------------Last Updated---------------
 
-ggplot(apps, aes(x = LastUpdated)) + 
+p <- ggplot(apps, aes(x = LastUpdated)) + 
   geom_histogram(bins = 50, color="#C71585", fill = '#FFB6C1', alpha=0.6, position = 'identity')
+ggsave("Plots/hist_lastUpdated.png", p)
 
-ggplot(apps, aes(x = LastUpdated, y = Rating)) +
+p <- ggplot(apps, aes(x = LastUpdated, y = Rating)) +
   geom_boxplot(
     color="#FF4500",
     fill="#FF4500",
@@ -517,6 +530,7 @@ ggplot(apps, aes(x = LastUpdated, y = Rating)) +
     outlier.fill="#FF8C00",
     outlier.size=3
   )
+ggsave("Plots/boxplot_lastUpdated_rating.png", p)
 
 #-------------------------------------------
 #           Data visualization
@@ -531,12 +545,13 @@ for (i in sort(unique(apps$MinimumAndroid))){
 }
 graph_df1 <- data.frame(Version = sort(unique(apps$MinimumAndroid)), Size = list1)
 
-ggplot(graph_df1, aes(x = Version, y = Size, group=1)) +
+p <- ggplot(graph_df1, aes(x = Version, y = Size, group=1)) +
   geom_point(shape=21, color="black", fill="#69b3a2", size=6) +
   geom_line(color = "black", linewidth = 0.8) +
   theme_light() +
   labs(x = "Версія Android", y = "Середній розмір додатку",
        title = "Відношення мінімально необхідної версії android до розміру додатку")
+ggsave("Plots/plot_minAndroid_to_avgSize.png", p)
 
 #First graph-(2/2)--------------------------
 #Відношення дати релізу до розміру додатку
@@ -548,18 +563,19 @@ for (i in sort(unique(str_sub(apps$Released, start = 1, end = 4)))){
 graph_df2 <- data.frame(DateOfRelease = sort(unique(str_sub(apps$Released, start = 1, end = 4))), Size = list2)
 
 
-ggplot(graph_df2, aes(x = DateOfRelease, y = Size, group=1)) +
+p <- ggplot(graph_df2, aes(x = DateOfRelease, y = Size, group=1)) +
   geom_point(shape=21, color="black", fill="#69b3a2", size=6) +
   geom_line(color = "black", linewidth = 0.8) +
   theme_light() +
   labs(x = "Дата релізу", y = "Середній розмір додатку",
        title = "Відношення дати релізу до розміру додатку")
+ggsave("Plots/plot_release_to_avgSize.png", p)
 
 #Second graph-------------------------------
 #Маємо гіпотезу, що чим новіші у додатку оновлення, тим білший в нього рейтинг
 #Перевіримо це:
 
-ggplot(apps %>% filter(Rating > 0), aes(x = Rating, y = str_sub(LastUpdated, start = 1, end = 4), fill = after_stat(x))) +
+p <- ggplot(apps %>% filter(Rating > 0), aes(x = Rating, y = str_sub(LastUpdated, start = 1, end = 4), fill = after_stat(x))) +
   geom_density_ridges_gradient(scale = 3, rel_min_height = 0.01) +
   scale_fill_viridis(option = "C") +
   labs(x = "Рейтинг", y = "Рік останнього оновлення",
@@ -573,6 +589,7 @@ ggplot(apps %>% filter(Rating > 0), aes(x = Rating, y = str_sub(LastUpdated, sta
     legend.position="none",
     panel.spacing = unit(0.1, "lines"),
     strip.text.x = element_text(size = 8))
+ggsave("Plots/plot_lastApdated_to_rating.png", p)
 
 #Third graph--------------------------------
 #Відношення мінімально необхідної версії android до середнього розміру додатку
@@ -587,16 +604,21 @@ colnames(graph_df3) <- sort(unique(apps$MinimumAndroid[!is.na (apps$MinimumAndro
 graph_df3 <- rbind(rep(max(list3), length(list3)), rep(0,length(list3)), graph_df3)
 
 
-radarchart(graph_df3,
+p <- radarchart(graph_df3,
            pcol=rgb(0.2,0.5,0.5,0.9) , pfcol=rgb(0.2,0.5,0.5,0.5), plwd=4,
            cglcol="grey", cglty=1, axislabcol="grey", caxislabels=seq(0,20,5), cglwd=0.8,
            vlcex=0.8 )
+ggsave("Plots/radarchart_minAndroid_to_maxInst.png", p)
 
 #------------------------------------------------------------------------------------------------------
 
 #---------------------------
 # Pylypchuk Artem 
-   
+
+apps <- apps %>% mutate(
+    Rating = as.numeric(Rating),
+)
+
 # Descriptive analysis of the rating
 r_data <- apps %>% 
   filter(!is.na(Rating)) %>% 

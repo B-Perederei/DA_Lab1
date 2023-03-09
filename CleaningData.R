@@ -61,7 +61,7 @@ apps["ContentRating"][apps["ContentRating"] == "Unrated"] <- NA
 #                        Currency, Size, MinimumAndroid, DeveloperId,
 #                        DeveloperEmail, Released)
 
-apps$AppName[is.na(apps$AppName)] <- 'NA '
+apps$AppName[is.na(apps$AppName)] <- 'N A'
 
 # Changing collision categories
 apps["Category"][apps["Category"] == "Educational"] <- "EducationalGame"

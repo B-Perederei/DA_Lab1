@@ -32,15 +32,16 @@ appsByCategory <- ggplot(appsByCategory, aes(x = reorder(Category, -n), y = n)) 
 	theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 ggsave("Plots/appsByCategory.png", plot = appsByCategory)
 
-appsByCategory %>% filter(n < median(n) - 3*mad(n) | n > median(n) + 3*mad(n)) %>%
-arrange(desc(n))
+appsByCategory <- apps %>% group_by(Category) %>% count
+gampelAppsByCategory <- appsByCategory %>% filter(n < median(n) - 3*mad(n) | n > median(n) + 3*mad(n)) %>% arrange(desc(n))
 
+appsByCategory <- apps %>% group_by(Category) %>% count
 qqAppsByCategory <- ggplot(appsByCategory, aes(sample = n)) +
 	stat_qq_point() + stat_qq_line() + stat_qq_band(fill="skyblue") +
 	labs(x = "Quntiles of normal distribution", y = "Number of Apps") +
 	theme(axis.title = element_text(size = 12),
 	axis.text = element_text(size = 12))
-	ggsave("Plots/qqAppsByCategory.png", plot = qqAppsByCategory)
+ggsave("Plots/qqAppsByCategory.png", plot = qqAppsByCategory)
 
 logQQAppsByCategory <- ggplot(appsByCategory, aes(sample = log(n))) +
 	stat_qq_point() + stat_qq_line() + stat_qq_band(fill="skyblue") +
@@ -55,7 +56,6 @@ installsCount <- ggplot(apps, aes(x = MinimumInstalls)) +
 	scale_y_continuous(labels = scales::comma) +
 	labs(x = "Install category", y = "Number of apps") +
 	theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
-
 ggsave("Plots/installsCount.png", plot = installsCount)
 
 installsCountEnlarged <- ggplot(apps, aes(x = MinimumInstalls)) + 
@@ -64,47 +64,25 @@ installsCountEnlarged <- ggplot(apps, aes(x = MinimumInstalls)) +
 	labs(x = "Install category", y = "Number of apps") +
 	coord_cartesian(ylim = c(0, 100)) +
 	theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
-
 ggsave("Plots/installsCountEnlarged.png", plot = installsCountEnlarged)
-
-apps %>% filter(MaximumInstalls > 5000000000) %>% arrange(desc(MaximumInstalls), desc(MaximumInstalls))
 
 # MaximumInstalls
 summary(apps$MaximumInstalls)
 
-apps %>% filter(MaximumInstalls < median(MaximumInstalls) - 3*mad(MaximumInstalls) | MaximumInstalls > median(MaximumInstalls) + 3*mad(MaximumInstalls)) %>%
+gampelMaximumInstalls <- apps %>% filter(MaximumInstalls < median(MaximumInstalls) - 3*mad(MaximumInstalls) | MaximumInstalls > median(MaximumInstalls) + 3*mad(MaximumInstalls)) %>%
 arrange(desc(MaximumInstalls), desc(MaximumInstalls))
-
-qqMaximumInstalls <- ggplot(apps, aes(sample = MaximumInstalls)) +
-	stat_qq_point() + stat_qq_line() + stat_qq_band(fill="skyblue") +
-	labs(x = "Quntiles of normal distribution", y = "Number of Apps") +
-	theme(axis.title = element_text(size = 12),
-	axis.text = element_text(size = 12))
-	ggsave("Plots/qqMaximumInstalls.png", plot = qqMaximumInstalls)
-
-logQQMaximumInstalls <- ggplot(apps, aes(sample = log(MaximumInstalls))) +
-	stat_qq_point() + stat_qq_line() + stat_qq_band(fill="skyblue") +
-	labs(x = "Quntiles of normal distribution", y = "Number of Apps") +
-	theme(axis.title = element_text(size = 12),
-	axis.text = element_text(size = 12))
-	ggsave("Plots/logQQMaximumInstalls.png", plot = logQQMaximumInstalls)
-
 
 # EDA
 developers <- apps %>% group_by(DeveloperId) %>% summarise(MaximumInstalls = sum(MaximumInstalls)) %>% arrange(desc(MaximumInstalls), desc(MaximumInstalls)) %>% print(n = 100)
-m <- apps %>% filter(DeveloperId != "Google LLC" & DeveloperId != "Samsung Electronics Co.")
-
-summary(m$MaximumInstalls)
-
 installsByCategory <- apps %>% filter(DeveloperId != "Google LLC" & MaximumInstalls < 100000000 & MaximumInstalls > 10000000) %>%
   group_by(Category) %>% 
   summarise(MaximumInstalls = mean(MaximumInstalls))
 
-l <- apps %>% filter(DeveloperId != "Google LLC" & MaximumInstalls < 500000000) %>%
+appsWithoutOutlies <- apps %>% filter(DeveloperId != "Google LLC" & MaximumInstalls < 500000000) %>%
 	group_by(Category) %>% 
   	summarise(MaximumInstalls = mean(MaximumInstalls))
 
-installsByCategoryPlot <- ggplot(l, aes(x = reorder(Category, -MaximumInstalls), y = MaximumInstalls), stat="identity") + 
+installsByCategoryPlot <- ggplot(appsWithoutOutlies, aes(x = reorder(Category, -MaximumInstalls), y = MaximumInstalls), stat="identity") + 
 	geom_bar(fill="skyblue", stat="identity") +
 	labs(x = "Category", y = "Billionss of Installs") +
 	theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
@@ -163,12 +141,12 @@ ggsave("Plots/installsByCategoryHeatMap5.png", plot = installsByCategoryHeatMap5
 
 # Editor's Choice correlation
 appsEditorsChoice <- apps %>% filter(MaximumInstalls > 10000 & MaximumInstalls < 10000000)
-x <- ggplot(appsEditorsChoice, aes(x = MaximumInstalls, y = EditorsChoice, fill = EditorsChoice)) +
+EditorsChoiceCorrelation <- ggplot(appsEditorsChoice, aes(x = MaximumInstalls, y = EditorsChoice, fill = EditorsChoice)) +
   geom_density_ridges() +
   theme_ridges() + 
   theme(legend.position = "none") +
   scale_x_continuous(labels = scales::comma)
-ggsave("Plots/EditorsChoiceCorrelation.png", plot = appsEditorsChoice)
+ggsave("Plots/EditorsChoiceCorrelation.png", plot = EditorsChoiceCorrelation)
 
 #------------------------------------------------------------------------------------------------------
 # Anna Bozhenko

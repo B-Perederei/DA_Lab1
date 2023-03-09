@@ -1,5 +1,4 @@
 library(tidyverse)
-library(ggplot2)
 options(dplyr.width = Inf)
 
 apps <- read_csv("Data/Google-Playstore.csv", locale = locale(encoding = "UTF-8"))

@@ -399,19 +399,17 @@ print(p)
 ggsave("Plots/paid_apps_installs_tendency.png", p)
 
 #------------------------------------------------------------------------------------------------------
-# Kubrak Valentin
-#
+#Kubrak Valentin
+
 #-------------------------------------------
 #           Descriptive analysis
 #-------------------------------------------
 
 #------------------Size---------------------
 
-p <- qqPlot(apps$Size)
-ggsave("Plots/qqPlot_size.png", p)
+# p <- qqPlot(apps$Size)
 
-p <- qqPlot(log(apps$Size))
-ggsave("Plots/qqPlot_logSize.png", p)
+# p <- qqPlot(log(apps$Size))
 
 summary(apps$Size)
 
@@ -452,12 +450,12 @@ without_na = subset(apps, !is.na(MinimumAndroid))
 #Точковий графік відношення MinimumAndroid до MaximumInstalls
 p <- ggplot(without_na, aes(x = MinimumAndroid, y = MaximumInstalls)) +
   geom_point()
-ggsave("Plots/point_minAndroid_maxInst.png", p)
+# ggsave("Plots/point_minAndroid_maxInst.png", p)
 
 #Аби отримати більш менш рівномірний розподіл, прологарифмуємо змінну MaximumInstalls
 p <- ggplot(apps, aes(x = MinimumAndroid, y = log(MaximumInstalls))) +
   geom_point()
-ggsave("Plots/point_minAndroid_logMaxInst.png", p)
+# ggsave("Plots/point_minAndroid_logMaxInst.png", p)
 
 #boxplot відношення MinimumAndroid до MaximumInstalls
 p <- ggplot(apps, aes(x = MinimumAndroid, y = log(MaximumInstalls))) +
@@ -575,7 +573,7 @@ ggsave("Plots/plot_release_to_avgSize.png", p)
 #Маємо гіпотезу, що чим новіші у додатку оновлення, тим білший в нього рейтинг
 #Перевіримо це:
 
-p <- ggplot(apps %>% filter(Rating > 0), aes(x = Rating, y = str_sub(LastUpdated, start = 1, end = 4), fill = after_stat(x))) +
+p <- ggplot(apps %>% filter(Rating > 0), aes(x = as.numeric(as.character(Rating)), y = str_sub(LastUpdated, start = 1, end = 4), fill = after_stat(x))) +
   geom_density_ridges_gradient(scale = 3, rel_min_height = 0.01) +
   scale_fill_viridis(option = "C") +
   labs(x = "Рейтинг", y = "Рік останнього оновлення",
@@ -609,8 +607,8 @@ p <- radarchart(graph_df3,
            cglcol="grey", cglty=1, axislabcol="grey", caxislabels=seq(0,20,5), cglwd=0.8,
            vlcex=0.8 )
 ggsave("Plots/radarchart_minAndroid_to_maxInst.png", p)
-
 #------------------------------------------------------------------------------------------------------
+
 
 #---------------------------
 # Pylypchuk Artem 

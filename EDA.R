@@ -10,6 +10,7 @@ library(car)
 library(ggpubr)
 library(formattable)
 options(dplyr.width = Inf)
+options(scipen = 999)
 
 # God, give your computer powers to run this file!
 apps <- read_csv("Data/Google-Playstore-tidied.csv", locale = locale(encoding = "UTF-8"))
@@ -489,7 +490,7 @@ ggsave("Plots/boxplot_minAndroid_logSize.png", p)
 
 p <- ggplot(apps, aes(x = Released)) + 
   geom_histogram(bins = 40, color="#B22222", fill = '#FA8072', alpha=0.6, position = 'identity')
-ggsave("hist_released.png", p)
+ggsave("Plots/hist_released.png", p)
 
 p <- ggplot(apps, aes(x = Released, y = Size)) +
   geom_boxplot(
